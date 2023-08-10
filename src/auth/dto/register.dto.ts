@@ -1,5 +1,5 @@
 import { IsEmail, Matches } from "class-validator";
-import { IsStringField } from "common/decorators/validators";
+import { IsStringField } from "../../common/decorators/validators";
 
 export class RegistrationDto {
   @IsStringField({

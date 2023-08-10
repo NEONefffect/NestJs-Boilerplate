@@ -1,8 +1,6 @@
 import { config } from "dotenv";
-import * as path from "path";
 
-const root = path.join.bind(this, __dirname);
-config({ path: root("../") });
+config();
 
 export default {
   PORT: process.env.PORT || 5000,

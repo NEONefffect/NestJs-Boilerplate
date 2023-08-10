@@ -1,8 +1,15 @@
 import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import * as bcrypt from "bcryptjs";
+import { scrypt, timingSafeEqual } from "crypto";
+import { promisify } from "util";
+
+const scryptAsync = promisify(scrypt);
+
 import config from "config";
 import { UserService } from "../user/user.service";
+import { RegistrationDto } from "./dto/register.dto";
+import { EmailsService } from "common/services/emails.service";
+import { generateRestorePasswordEmail } from "common/data-pool/email-template";
 
 @Injectable()
 export class AuthService {
@@ -11,17 +18,37 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private jwtService: JwtService,
+    private emailsServices: EmailsService,
   ) {}
 
+  async comparePassword(
+    suppliedPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    const hashedPasswordBuf = Buffer.from(hashedPassword, "hex");
+    const suppliedPasswordBuf = (await scryptAsync(
+      suppliedPassword,
+      config.SALT,
+      64,
+    )) as Buffer;
+    return timingSafeEqual(hashedPasswordBuf, suppliedPasswordBuf);
+  }
+
   async hashPassword(password: string) {
-    const salt = await bcrypt.genSalt();
-    return bcrypt.hash(password, salt);
+    const buf = (await scryptAsync(password, config.SALT, 64)) as Buffer;
+    return buf.toString("hex");
   }
 
   async validateUser(email: string, password: string) {
-    const user = await this.userService.findOne({ email });
-    if (user && bcrypt.compareSync(password, user.password)) return user;
-    else return null;
+    const user = await this.userService.findOneOrFail({ email });
+
+    if (user.isActive === false) {
+      throw new BadRequestException(
+        "User is not active. Please contact support",
+      );
+    }
+
+    return await this.comparePassword(password, user.password);
   }
 
   login(user) {
@@ -33,31 +60,29 @@ export class AuthService {
   }
 
   async register(dto: RegistrationDto) {
+    const { email } = dto;
+
     const hashPassword = await this.hashPassword(dto.password);
 
     const user = await this.userService.create({
       ...dto,
       password: hashPassword,
-      role: UserRoles.User,
-    });
-    const portfolio = await this.portfolioService.create({
-      name: "Main Portfolio",
-      user,
-    });
-    await this.userService.create({
-      ...user,
-      portfolios: [portfolio],
+      isActive: true,
     });
 
-    return {
-      accessToken: this.jwtService.sign({
-        id: user.id,
-      }),
-    };
+    // await this.emailsServices.sendEmail({
+    //   recipient: email,
+    //   subject: "Create your new account",
+    //   message: generateRestorePasswordEmail({
+    //     firstName: user.firstName,
+    //     token: this.jwtService.sign({ email }, { expiresIn: "30m" }),
+    //   }),
+    // });
+    return user;
   }
 
   async restorePassword(email: string) {
-    const user = await this.userService.findOne({ email });
+    const user = await this.userService.findOne({ where: { email } });
     if (!user) {
       throw new BadRequestException(
         "User is not found. Please contact support",
@@ -66,7 +91,7 @@ export class AuthService {
 
     await this.emailsServices.sendEmail({
       recipient: email,
-      subject: "TradingPiranha. Get your new password",
+      subject: "Get your new password",
       message: generateRestorePasswordEmail({
         firstName: user.firstName,
         token: this.jwtService.sign({ email }, { expiresIn: "30m" }),
@@ -83,10 +108,12 @@ export class AuthService {
       throw new BadRequestException(e.message);
     }
 
-    const user = await this.userService.findOne({ email: tokenData.email });
+    const user = await this.userService.findOne({
+      where: { email: tokenData.email },
+    });
     const hashPassword = await this.hashPassword(password);
     user.password = hashPassword;
 
-    await this.userService.update({ id: user.id }, { password: hashPassword });
+    await this.userService.update(user.id, { password: hashPassword });
   }
 }
