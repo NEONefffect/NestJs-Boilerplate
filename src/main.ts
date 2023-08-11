@@ -18,8 +18,8 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle("Piranha")
-    .setDescription("Piranha API documentation")
+    .setTitle("API")
+    .setDescription("API documentation")
     .setVersion("0.0.1")
     .build();
 
@@ -29,6 +29,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      whitelist: true,
     }),
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
