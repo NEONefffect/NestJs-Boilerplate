@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { scrypt, timingSafeEqual } from "crypto";
 import { promisify } from "util";
@@ -9,7 +14,11 @@ import config from "config";
 import { UserService } from "../user/user.service";
 import { RegistrationDto } from "./dto/register.dto";
 import { EmailsService } from "common/services/emails.service";
-import { generateRestorePasswordEmail } from "common/data-pool/email-template";
+import {
+  generateConfirmedEmail,
+  generateRestorePasswordEmail,
+} from "common/data-pool/email-template";
+import { exceptionMessages } from "common/constant/exceprion-messages";
 
 @Injectable()
 export class AuthService {
@@ -67,7 +76,7 @@ export class AuthService {
     const user = await this.userService.create({
       ...dto,
       password: hashPassword,
-      isActive: true,
+      isActive: false,
     });
 
     // await this.emailsServices.sendEmail({
@@ -115,5 +124,80 @@ export class AuthService {
     user.password = hashPassword;
 
     await this.userService.update(user.id, { password: hashPassword });
+  }
+
+  async confirmEmail(token: string) {
+    let tokenData;
+    try {
+      tokenData = this.jwtService.verify(token, { secret: config.JWT_SECRET });
+    } catch (e) {
+      this.logger.error(e);
+      throw new BadRequestException(e.message);
+    }
+
+    const user = await this.userService.findOneOrFail({
+      email: tokenData.email,
+    });
+
+    await this.userService.update(user.id, {
+      isActive: true,
+    });
+    return this.login(user);
+  }
+  async resendConfirmationEmail(email) {
+    const user = await this.userService.findOneOrFail({ email });
+
+    await this.emailsServices.sendEmail({
+      recipient: email,
+      subject: "Create your new account",
+      message: generateConfirmedEmail({
+        fullName: user.firstName + " " + user.lastName,
+        token: this.jwtService.sign({ email }, { expiresIn: "30m" }),
+      }),
+    });
+  }
+  async googleLogin(req: {
+    user: {
+      email: string;
+      firstName: string;
+      lastName: string;
+      picture: string;
+    };
+  }) {
+    if (!req.user)
+      throw new ForbiddenException(exceptionMessages.USER_NOT_FOUND);
+
+    const user = await this.userService.findOne({
+      where: { email: req.user.email },
+    });
+
+    if (user) return this.login(user);
+
+    const newUser = await this.userService.create({
+      lastName: req.user.lastName,
+      firstName: req.user.firstName,
+      email: req.user.email,
+      isActive: true,
+    });
+    return this.login(newUser);
+  }
+  async facebookLogin(req) {
+    if (!req.user)
+      throw new ForbiddenException(exceptionMessages.USER_NOT_FOUND);
+
+    const user = await this.userService.findOne({
+      where: { facebookId: req.user.facebookId },
+    });
+
+    if (user) return this.login(user);
+
+    const newUser = await this.userService.create({
+      lastName: req.user.lastName,
+      firstName: req.user.firstName,
+      email: req.user.email,
+      isActive: true,
+      facebookId: req.user.facebookId,
+    });
+    return this.login(newUser);
   }
 }

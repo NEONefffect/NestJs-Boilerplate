@@ -29,6 +29,10 @@ export class User {
   password: string;
 
   @Exclude()
+  @Column({ nullable: true })
+  facebookId: string;
+
+  @Exclude()
   @CreateDateColumn()
   createdAt: Date;
 

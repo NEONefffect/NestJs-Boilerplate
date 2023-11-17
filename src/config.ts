@@ -23,4 +23,12 @@ export default {
   S3_BUCKETS: {
     S3_BUCKETS_CDN: process.env.S3_BUCKETS_CDN,
   },
+  GOOGLE: {
+    GOOGLE_AUTH_CLIENT_ID: process.env.GOOGLE_AUTH_CLIENT_ID,
+    GOOGLE_AUTH_CLIENT_SECRET: process.env.GOOGLE_AUTH_CLIENT_SECRET,
+  },
+  FACEBOOK: {
+    CLIENT_ID: process.env.FACEBOOK_AUTH_CLIENT_ID,
+    CLIENT_SECRET: process.env.FACEBOOK_AUTH_CLIENT_SECRET,
+  },
 };

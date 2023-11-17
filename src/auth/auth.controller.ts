@@ -1,4 +1,4 @@
-import { Body, Patch } from "@nestjs/common";
+import { Body, Get, Patch, Query } from "@nestjs/common";
 import { Controller, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
@@ -8,6 +8,7 @@ import { LoginDto } from "./dto/login.dto";
 import { RegistrationDto } from "./dto/register.dto";
 import { ForgotPasswordDto } from "./dto/reset-password.dto";
 import { SetPasswordDto } from "./dto/set-password.dto";
+import { GoogleOAuthGuard } from "./guard/google.guard";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -34,5 +35,31 @@ export class AuthController {
   @Patch("set-password")
   setPassword(@Body() dto: SetPasswordDto) {
     return this.authService.setPassword(dto.token, dto.password);
+  }
+
+  @Get("google")
+  @UseGuards(GoogleOAuthGuard)
+  async googleAuth(@Req() req) {}
+
+  @Get("google-redirect")
+  @UseGuards(GoogleOAuthGuard)
+  googleAuthRedirect(@Req() req) {
+    return this.authService.googleLogin(req);
+  }
+
+  @Get("facebook")
+  @UseGuards(AuthGuard("facebook"))
+  async facebookLogin(): Promise<any> {
+    return;
+  }
+
+  @Get("facebook-redirect")
+  @UseGuards(AuthGuard("facebook"))
+  async facebookLoginRedirect(@Req() req): Promise<any> {
+    return this.authService.facebookLogin(req.user);
+  }
+  @Post("send-confirm-email")
+  resendConfirmationEmail(@Query("email") email: string) {
+    return this.authService.resendConfirmationEmail(email);
   }
 }
