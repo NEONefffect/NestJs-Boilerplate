@@ -11,12 +11,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string): Promise<any> {
-    const user = await this.authService.validateUser(email, password);
-    if (!user)
-      throw new UnauthorizedException(
-        "No account with this email address currently exists or password is incorrect",
-      );
-
-    return user;
+    // const user = await this.authService.validateUser(email, password);
+    // if (!user)
+    //   throw new UnauthorizedException(
+    //     "No account with this email address currently exists or password is incorrect",
+    //   );
+    // return user;
   }
 }
