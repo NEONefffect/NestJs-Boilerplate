@@ -17,4 +17,4 @@ jobs:
           with:
             token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
             release-type: node
-            default-branch: ${{ github.ref_name }}
+            target-branch: ${{ github.ref_name }}
