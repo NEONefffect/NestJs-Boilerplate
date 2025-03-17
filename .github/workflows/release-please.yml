@@ -10,11 +10,27 @@ permissions:
 name: release-please
 
 jobs:
-    release-please:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: googleapis/release-please-action@v4
-          with:
-            token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
-            release-type: node
-            target-branch: ${{ github.ref_name }}
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update release date
+        run: |
+          RELEASE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          jq --arg date "$RELEASE_DATE" '.releaseDate = $date' package.json > tmp.json && mv tmp.json package.json
+          cat package.json
+      
+      - name: Commit updated package.json
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add package.json
+          git commit -m "chore: update release date [skip ci]" || echo "No changes to commit"
+          git push
+
+      - name: release-please:release
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
+          release-type: node
+          target-branch: ${{ github.ref_name }}
+          
