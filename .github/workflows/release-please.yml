@@ -34,7 +34,7 @@ jobs:
           cat package.json
 
       - name: Commit updated package.json to release PR
-        if: steps.release.outputs.release_created == 'false'
+        # if: steps.release.outputs.release_created == 'false'
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
