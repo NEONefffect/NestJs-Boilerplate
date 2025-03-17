@@ -26,6 +26,11 @@ jobs:
           release-type: node
           target-branch: ${{ github.ref_name }}
 
+      - name: Test Release Outputs
+        run: |
+          echo "Release outputs: ${{ steps.release.outputs }}"
+          echo "Release : ${{ steps.release }}"
+
       - name: Update release date if PR exists
         if: steps.release.outputs.release_created == 'false'
         run: |
