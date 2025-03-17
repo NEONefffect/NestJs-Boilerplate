@@ -27,7 +27,7 @@ jobs:
           target-branch: ${{ github.ref_name }}
 
       - name: Update release date if PR exists
-        if: steps.release.outputs.release_created == 'false'
+        # if: steps.release.outputs.release_created == 'false'
         run: |
           RELEASE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           jq --arg date "$RELEASE_DATE" '.releaseDate = $date' package.json > tmp.json && mv tmp.json package.json
