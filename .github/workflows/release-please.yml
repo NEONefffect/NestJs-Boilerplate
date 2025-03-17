@@ -36,9 +36,7 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-      
           RELEASE_PR_BRANCH="${{ steps.release.outputs.pr_branch }}"  
-      
           git checkout $RELEASE_PR_BRANCH
           git add package.json
           git commit -m "chore: update release date [skip ci]" || echo "No changes to commit"
