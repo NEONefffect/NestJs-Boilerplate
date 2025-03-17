@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/NEONefffect/NestJs-Boilerplate/compare/v1.1.0...v1.1.1) (2025-03-17)
+
+
+### Bug Fixes
+
+* token ([49b65bb](https://github.com/NEONefffect/NestJs-Boilerplate/commit/49b65bb8cd59652a734cd13d8f090a9787d6f7ab))
+
 ## [1.1.0](https://github.com/NEONefffect/NestJs-Boilerplate/compare/v1.0.1...v1.1.0) (2025-03-17)
 
 
