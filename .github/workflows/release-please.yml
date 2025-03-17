@@ -40,6 +40,9 @@ jobs:
           jq --arg date "$TODAY" '.releaseDate = $date' package.json > package.json.new
           mv package.json.new package.json
           
+
+
+          
       - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Actions"
