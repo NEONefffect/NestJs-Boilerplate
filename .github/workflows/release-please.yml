@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Нужно для корректной работы с PR
+          fetch-depth: 0 
 
       - name: release-please:release
         id: release
@@ -27,18 +27,21 @@ jobs:
           target-branch: ${{ github.ref_name }}
 
       - name: Update release date if PR exists
-        # if: steps.release.outputs.release_created == 'false'
         run: |
           RELEASE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           jq --arg date "$RELEASE_DATE" '.releaseDate = $date' package.json > tmp.json && mv tmp.json package.json
           cat package.json
 
       - name: Commit updated package.json to release PR
-        # if: steps.release.outputs.release_created == 'false'
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git checkout -b release-please--branches--main
+
+                    
+          RELEASE_PR_BRANCH="release-please--branches--${{ github.ref_name }}"
+      
+          git checkout $RELEASE_PR_BRANCH
+
           git add package.json
           git commit -m "chore: update release date [skip ci]" || echo "No changes to commit"
-          git push origin release-please--branches--main
+          git push origin $RELEASE_PR_BRANCH
