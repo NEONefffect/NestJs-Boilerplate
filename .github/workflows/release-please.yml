@@ -2,12 +2,14 @@ on:
   push:
     branches:
       - main
+      - stage
 
 permissions:
   contents: write
   pull-requests: write
 
 name: release-please
+
 
 
 jobs:
@@ -23,7 +25,8 @@ jobs:
           token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
           release-type: node
           target-branch: ${{ github.ref_name }}
-          
+          config-file: .release-please-config.json
+
   update-release-date:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
@@ -31,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }} 
+          ref: ${{ github.ref_name }}
 
       - name: Update release date in package.json
         run: |
