@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/NEONefffect/NestJs-Boilerplate/compare/nestjs-boilerplate-v1.0.1...nestjs-boilerplate-v1.1.0) (2025-03-19)
+
+
+### Features
+
+* 123 ([339fef9](https://github.com/NEONefffect/NestJs-Boilerplate/commit/339fef9487a237ba7ca7946aedb35a6ca80ac4b2))
+* test ([faa34fc](https://github.com/NEONefffect/NestJs-Boilerplate/commit/faa34fc55418337bca80d253da3e678f5730c02f))
+
+
+### Bug Fixes
+
+* config ([ba861d8](https://github.com/NEONefffect/NestJs-Boilerplate/commit/ba861d8bd87b10ed777a33f2d3fea51a3aeef879))
+
 ## [1.0.1](https://github.com/NEONefffect/NestJs-Boilerplate/compare/nestjs-boilerplate-v1.3.0...nestjs-boilerplate-v1.0.1) (2025-03-19)
 
 
