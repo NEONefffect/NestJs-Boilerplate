@@ -1,16 +1,20 @@
 {
-  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/latest.json",
-  "releases": {
-    "stage": {
+  "branches": [
+    {
+      "branch": "stage",
       "release-type": "node",
       "prerelease": true,
       "prerelease-label": "beta",
-      "changelog-path": "CHANGELOG-stage.md"
+      "changelog-path": "CHANGELOG-stage.md",
+      "versioning": "default",
+      "bump-minor-pre-major": true,
+      "include-v-in-tag": false
     },
-    "main": {
+    {
+      "branch": "prod",
       "release-type": "node",
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "include-v-in-tag": false
     }
-  }
+  ]
 }
-
