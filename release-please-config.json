@@ -4,7 +4,7 @@
         ".": {
             "prerelease": true,
             "release-type": "node",
-            "changelogPath": "CHANGELOG-stage.md",
+            "changelogPath": "CHANGELOG-stage.md"
         }
     }
 }
