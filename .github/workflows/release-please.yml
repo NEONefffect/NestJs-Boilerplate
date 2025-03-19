@@ -26,6 +26,7 @@ jobs:
           release-type: node
           target-branch: ${{ github.ref_name }}
           config-file: release-please-config.json
+          prerelease: true
 
 
   update-release-date:
