@@ -1,5 +1,6 @@
 {
   "prerelease": true,
   "prerelease-label": "beta",
-  "changelog-path": "CHANGELOG-stage.md"
+  "changelog-path": "CHANGELOG-stage.md",
+  ".": "1.2.0"
 }
