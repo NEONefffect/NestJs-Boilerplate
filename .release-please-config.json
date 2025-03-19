@@ -1,20 +1,28 @@
 {
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "",
+      "changelog-path": "CHANGELOG.md",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": false,
+      "draft": false,
+      "prerelease": false,
+      "include-component-in-tag": false
+    }
+  },
   "branches": [
     {
-      "branch": "stage",
-      "release-type": "node",
+      "name": "stage",
       "prerelease": true,
       "prerelease-label": "beta",
       "changelog-path": "CHANGELOG-stage.md",
-      "versioning": "default",
-      "bump-minor-pre-major": true,
-      "include-v-in-tag": false
+      "versioning": "default"
     },
     {
-      "branch": "prod",
-      "release-type": "node",
-      "changelog-path": "CHANGELOG.md",
-      "include-v-in-tag": false
+      "name": "prod",
+      "prerelease": false,
+      "changelog-path": "CHANGELOG.md"
     }
   ]
 }
