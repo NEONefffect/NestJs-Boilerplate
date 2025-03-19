@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/NEONefffect/NestJs-Boilerplate/compare/v1.2.0...v1.3.0) (2025-03-19)
+
+
+### Features
+
+* qqq ([6843436](https://github.com/NEONefffect/NestJs-Boilerplate/commit/68434362cc671d7c47ac0528973ee5a612956131))
+
 ## [1.2.0](https://github.com/NEONefffect/NestJs-Boilerplate/compare/v1.1.2...v1.2.0) (2025-03-19)
 
 
