@@ -1,5 +1,7 @@
 {
-  "prerelease": true,
-  "prerelease-label": "beta",
-  "changelog-path": "CHANGELOG-stage.md"
+  ".": {
+    "prerelease-label": "beta",
+    "changelog-path": "CHANGELOG-stage.md",
+    "prerelease": true
+  }
 }
